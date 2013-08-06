@@ -1,51 +1,19 @@
 function init()
 {
 	var submitButton = document.getElementById("submit");
-	submitButton.addEventListener("click", main, false);
+	submitButton.addEventListener("click", checkData, false);
 }
 
-function checkData()
+function sortCoords()
 {
-	var inputWords = document.getElementById("inputWords").value.replace(/ /g, "").split(",");
-	window.inputWords = inputWords;
+	var temp = "0";
+	temp = outputWordPlace[outputWordPlace.length - 1][0];
+	outputWordPlace[outputWordPlace.length - 1][0] = outputWordPlace[outputWordPlace.length - 1][2]
+	outputWordPlace[outputWordPlace.length - 1][2] = temp;
 
-	var inputText = document.getElementById("inputText").value.split("\n");
-	window.inputText = inputText;
-
-	if (inputText[0] === "" && inputWords[0] === "")
-	{
-		alert("Nincsenek beírva adatok.");
-	}
-
-	else if (inputText[0] === "")
-	{
-		alert("Nincs táblázat, amiben kereshetnék.");
-	}
-
-	else if (inputWords[0] === "")
-	{
-		alert("Nincsenek keresési kulcsszavak.");
-	}
-
-	else
-	{
-		for (var i = 0; i < inputText.length - 1; i++)
-		{
-			if (inputText[i].length !== inputText[i + 1].length)
-			{
-				alert("A táblázat sorai nem egyenlő hosszúak.");
-			}
-
-			else
-			{
-				findWords();
-			}
-		}
-	}
-}
-
-function findWords()
-{
+	temp = outputWordPlace[outputWordPlace.length - 1][1];
+	outputWordPlace[outputWordPlace.length - 1][1] = outputWordPlace[outputWordPlace.length - 1][3]
+	outputWordPlace[outputWordPlace.length - 1][3] = temp;
 }
 
 function buildTable()
@@ -68,14 +36,66 @@ function buildTable()
 	}
 }
 
+function findWord(inputWord)
+{
+	buildTable();
+
+	//right
+
+	var outputWord = "";
+	var outputWordPlace = [];
+
+	for (var i = 0; i < inputText.length; i++)
+	{
+		for (var j = 0; j <= inputText[0].length - inputWord.length; j++)
+		{
+			outputWord = [];
+
+			for (var k = j; k < inputWord.length + j; k++)
+			{
+				outputWord += document.getElementById("td" + String(i) + String(k)).innerHTML;
+
+				if (k === j)
+				{
+					outputWordPlace[outputWordPlace.length] = [k, i];
+				}
+
+				else if (k === inputWord.length + j - 1)
+				{
+					outputWordPlace[outputWordPlace.length - 1][2] = k;
+					outputWordPlace[outputWordPlace.length - 1][3] = i;
+				}
+			}
+
+			if (outputWord !== inputWord && outputWord.split("").reverse().join("") !== inputWord)
+			{
+				outputWordPlace.splice(outputWordPlace.length - 1, 1);
+			}
+
+			else if (outputWordPlace[outputWordPlace.length - 1][0] > outputWordPlace[outputWordPlace.length - 1][2])
+			{
+				sortCoords();
+			}
+
+			else if (outputWordPlace[outputWordPlace.length - 1][1] > outputWordPlace[outputWordPlace.length - 1][3])
+			{
+				sortCoords();
+			}
+		}
+	}
+
+	for (var i = 0; i < outputWordPlace.length; i++)
+	{
+		showResult(outputWordPlace[i][0], outputWordPlace[i][1], outputWordPlace[i][2], outputWordPlace[i][3]);
+	}
+}
+
 function showResult(startCoordX, startCoordY, endCoordX, endCoordY)
 {
 	if (startCoordY === endCoordY && startCoordX <= endCoordX)
 	{
 		for (var i = startCoordX; i <= endCoordX; i++)
 		{
-			console.log(endCoordX + ", " + i);
-
 			var newAttribute = document.createAttribute("style");
 			newAttribute.value = "border-style: solid; border-color: red; width: 50px;";
 
@@ -87,32 +107,6 @@ function showResult(startCoordX, startCoordY, endCoordX, endCoordY)
 			else if (i === endCoordX)
 			{
 				newAttribute.value += "border-left-style: none;";
-			}
-
-			else
-			{
-				newAttribute.value += "border-left-style: none; border-right-style: none;";
-			}
-
-			document.getElementById("td" + String(startCoordY) + String(i)).setAttributeNode(newAttribute);
-		}
-	}
-
-	else if (startCoordY === endCoordY && startCoordX > endCoordX)
-	{
-		for (var i = endCoordX; i <= startCoordX; i++)
-		{
-			var newAttribute = document.createAttribute("style");
-			newAttribute.value = "border-style: solid; border-color: red; width: 50px;";
-
-			if (i === startCoordX)
-			{
-				newAttribute.value += "border-left-style: none;";
-			}
-
-			else if (i === endCoordX)
-			{
-				newAttribute.value += "border-right-style: none;";
 			}
 
 			else
@@ -221,9 +215,52 @@ function showResult(startCoordX, startCoordY, endCoordX, endCoordY)
 	}
 }
 
-function main()
+function checkData()
 {
-	checkData();
-	buildTable();
-	showResult(startCoordX, startCoordY, endCoordX, endCoordY);
+	var inputWords = document.getElementById("inputWords").value.replace(/ /g, "").split(",");
+	window.inputWords = inputWords;
+
+	var inputText = document.getElementById("inputText").value.split("\n");
+	window.inputText = inputText;
+
+	if (inputText[0] === "" && inputWords[0] === "")
+	{
+		alert("Nincsenek beírva adatok.");
+	}
+
+	else if (inputText[0] === "")
+	{
+		alert("Nincs táblázat, amiben kereshetnék.");
+	}
+
+	else if (inputWords[0] === "")
+	{
+		alert("Nincsenek keresési kulcsszavak.");
+	}
+
+	else
+	{
+		var isEqual = true;
+
+		for (var i = 0; i < inputText.length - 1; i++)
+		{
+			if (inputText[i].length !== inputText[i + 1].length)
+			{
+				isEqual = false;
+			}
+		}
+
+		if (isEqual = false)
+		{
+			alert("A táblázat sorai nem egyenlő hosszúak.");
+		}
+
+		else
+		{
+			for (var i = 0; i < inputWords.length; i++)
+			{
+				findWord(inputWords[i]);
+			}
+		}
+	}
 }
