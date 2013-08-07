@@ -43,46 +43,51 @@ function findWord(inputWord, direction, bottomBorder, rightBorder)
 
 	for (var i = 0; i < bottomBorder; i++)
 	{
-		for (var j = 0; j <= rightBorder; j++)
+		for (var j = 0; j < rightBorder; j++)
 		{
 			outputWord = "";
+			var k = 0;
 
-			if (direction === "horizontal")
-			{
-				var wordBorder = j;
-			}
-
-			else if (direction === "vertical")
-			{
-				var wordBorder = i;
-			}
-
-			for (var k = wordBorder; k < inputWord.length + wordBorder; k++)
+			while (outputWord.length < inputWord.length)
 			{
 				if (direction === "horizontal")
 				{
 					var firstCoord = i;
-					var secondCoord = k;
+					var secondCoord = j + k;
 				}
 
 				else if (direction === "vertical")
 				{
-					var firstCoord = k;
+					var firstCoord = i + k;
 					var secondCoord = j;
+				}
+
+				else if (direction === "rightDown")
+				{
+					var firstCoord = i + k;
+					var secondCoord = j + k;
+				}
+
+				else if (direction === "leftDown")
+				{
+					var firstCoord = i + k;
+					var secondCoord = j - k;
 				}
 
 				outputWord += document.getElementById("td" + String(firstCoord) + String(secondCoord)).innerHTML;
 
-				if (k === wordBorder)
+				if (outputWord.length === 1)
 				{
-					outputWordPlace[outputWordPlace.length] = [secondCoord, firstCoord];
+					outputWordPlace[outputWordPlace.length] = [j, i];
 				}
 
-				else if (k === inputWord.length + wordBorder - 1)
+				else if (outputWord.length === inputWord.length)
 				{
 					outputWordPlace[outputWordPlace.length - 1][2] = secondCoord;
 					outputWordPlace[outputWordPlace.length - 1][3] = firstCoord;
 				}
+
+				k++;
 			}
 
 			if (outputWord !== inputWord && outputWord.split("").reverse().join("") !== inputWord)
@@ -164,23 +169,12 @@ function showResult(startCoordX, startCoordY, endCoordX, endCoordY)
 
 	else if (startCoordY <= endCoordY && startCoordX <= endCoordX)
 	{
-		for (var i = startCoordX; i <= endCoordX; i++)
+		for (var i = 0; i <= endCoordX - startCoordX; i++)
 		{
 			var newAttribute = document.createAttribute("style");
 			newAttribute.value = "border-style: solid; border-color: red; width: 50px;";
 
 			document.getElementById("td" + String(startCoordY + i) + String(startCoordX + i)).setAttributeNode(newAttribute);
-		}
-	}
-
-	else if (startCoordY <= endCoordY && startCoordX > endCoordX)
-	{
-		for (var i = startCoordX; i <= endCoordX; i++)
-		{
-			var newAttribute = document.createAttribute("style");
-			newAttribute.value = "border-style: solid; border-color: red; width: 50px;";
-
-			document.getElementById("td" + String(startCoordY + i) + String(startCoordX - i)).setAttributeNode(newAttribute);
 		}
 	}
 
@@ -212,7 +206,7 @@ function main()
 	var inputWords = document.getElementById("inputWords").value.toUpperCase().replace(/ /g, "").split(",");
 	window.inputWords = inputWords;
 
-	var inputText = document.getElementById("inputText").value.toUpperCase().split("\n");
+	var inputText = document.getElementById("inputText").value.replace(/	/g, "").toUpperCase().split("\n");
 	window.inputText = inputText;
 
 	if (inputText[0] === "" && inputWords[0] === "")
@@ -253,8 +247,9 @@ function main()
 
 			for (var i = 0; i < inputWords.length; i++)
 			{
-				findWord(inputWords[i], "horizontal", inputText.length, inputText[0].length - inputWords[i].length);
-				findWord(inputWords[i], "vertical", inputText.length - inputWords[i].length + 1, inputText[0].length - 1);
+				findWord(inputWords[i], "horizontal", inputText.length, inputText[0].length - inputWords[i].length + 1);
+				findWord(inputWords[i], "vertical", inputText.length - inputWords[i].length + 1, inputText[0].length);
+				findWord(inputWords[i], "rightDown", inputText.length - inputWords[i].length + 1, inputText[0].length - inputWords[i].length + 1);
 			}
 		}
 	}
