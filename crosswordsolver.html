@@ -16,9 +16,14 @@
 		<p>
 			Táblázat:
 			<br />
-			<textarea id="inputText" rows="10" cols="10"></textarea>
+			<textarea id="inputText" rows="10" cols="40"></textarea>
 		</p>
-		<p><input type="button" id="submit" value="Keresés!" /></p>
+		<p>
+			<input type="button" id="submit" value="Keresés!" /><input type="button" id="settingsButton" value="Beállítások ↑" />
+		</p>
+		<p id="settings" style="display: none;">
+			<input type="checkbox" id="isBackwards" checked="true" /> Keresés visszafelé
+		</p>
 	</div>
 </body>
 </html>
