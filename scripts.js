@@ -4,7 +4,7 @@ function init()
 	submitButton.addEventListener("click", main, false);
 }
 
-function sortCoords()
+function sortCoords(outputWordPlace)
 {
 	var temp = "0";
 	temp = outputWordPlace[outputWordPlace.length - 1][0];
@@ -18,7 +18,7 @@ function sortCoords()
 
 function buildTable()
 {
-	document.body.innerHTML = '<div id="main"> Megtalált szavak: <p><table id="outputTable" style="margin:auto; font-size:40px; border-collapse: collapse;"> </table></p> </div>'
+	document.body.innerHTML = '<div id="main"> Megtalált szavak: <p><table id="outputTable" style="margin:auto; font-size:20px; border-collapse: collapse;"> </table></p> </div>'
 
 	var outputTable = document.getElementById("outputTable");
 
@@ -31,19 +31,20 @@ function buildTable()
 		{
 			document.getElementById("tr" + i).innerHTML += '<td id="td" style="width: 50px;"></td>';
 			document.getElementById("td").innerHTML = inputText[i][j];
-			document.getElementById("td").id += String(i) + String(j);
+			document.getElementById("td").id += String(i) + "|" + String(j);
 		}
 	}
 }
 
-function findWord(inputWord, direction, bottomBorder, rightBorder)
+function findWord(inputWord, direction, bottomBorder, rightBorder, startCoordX)
 {
 	var outputWord = "";
 	var outputWordPlace = [];
+	var foundWords = [];
 
 	for (var i = 0; i < bottomBorder; i++)
 	{
-		for (var j = 0; j < rightBorder; j++)
+		for (var j = startCoordX; j < rightBorder; j++)
 		{
 			outputWord = "";
 			var k = 0;
@@ -74,7 +75,7 @@ function findWord(inputWord, direction, bottomBorder, rightBorder)
 					var secondCoord = j - k;
 				}
 
-				outputWord += document.getElementById("td" + String(firstCoord) + String(secondCoord)).innerHTML;
+				outputWord += document.getElementById("td" + String(firstCoord) + "|" + String(secondCoord)).innerHTML;
 
 				if (outputWord.length === 1)
 				{
@@ -95,21 +96,30 @@ function findWord(inputWord, direction, bottomBorder, rightBorder)
 				outputWordPlace.splice(outputWordPlace.length - 1, 1);
 			}
 
-			else if (outputWordPlace[outputWordPlace.length - 1][0] > outputWordPlace[outputWordPlace.length - 1][2])
+			if (outputWordPlace[outputWordPlace.length - 1] !== undefined)
 			{
-				sortCoords();
-			}
+				if (direction !== "horizontal")
+				{
+					if (outputWordPlace[outputWordPlace.length - 1][1] > outputWordPlace[outputWordPlace.length - 1][3])
+					{
+						sortCoords();
+					}
+				}
 
-			else if (outputWordPlace[outputWordPlace.length - 1][1] > outputWordPlace[outputWordPlace.length - 1][3])
-			{
-				sortCoords();
+				else
+				{
+					if (outputWordPlace[outputWordPlace.length - 1][0] > outputWordPlace[outputWordPlace.length - 1][2])
+					{
+						sortCoords(outputWordPlace);
+					}
+				}
 			}
 		}
+	}
 
-		for (var j = 0; j < outputWordPlace.length; j++)
-		{
-			showResult(outputWordPlace[j][0], outputWordPlace[j][1], outputWordPlace[j][2], outputWordPlace[j][3]);
-		}
+	for (var j = 0; j < outputWordPlace.length; j++)
+	{
+		showResult(outputWordPlace[j][0], outputWordPlace[j][1], outputWordPlace[j][2], outputWordPlace[j][3]);
 	}
 }
 
@@ -120,7 +130,7 @@ function showResult(startCoordX, startCoordY, endCoordX, endCoordY)
 		for (var i = startCoordX; i <= endCoordX; i++)
 		{
 			var newAttribute = document.createAttribute("style");
-			newAttribute.value = "border-style: solid; border-color: red; width: 50px;";
+			newAttribute.value = "border-style: solid; border-color: red; background-color: red; width: 24px;";
 
 			if (i === startCoordX)
 			{
@@ -137,7 +147,7 @@ function showResult(startCoordX, startCoordY, endCoordX, endCoordY)
 				newAttribute.value += "border-left-style: none; border-right-style: none;";
 			}
 
-			document.getElementById("td" + String(startCoordY) + String(i)).setAttributeNode(newAttribute);
+			document.getElementById("td" + String(startCoordY) + "|" + String(i)).setAttributeNode(newAttribute);
 		}
 	}
 
@@ -146,7 +156,7 @@ function showResult(startCoordX, startCoordY, endCoordX, endCoordY)
 		for (var i = startCoordY; i <= endCoordY; i++)
 		{
 			var newAttribute = document.createAttribute("style");
-			newAttribute.value = "border-style: solid; border-color: red; width: 50px;";
+			newAttribute.value = "border-style: solid; border-color: green; background-color: green; width: 24px;";
 
 			if (i === startCoordY)
 			{
@@ -163,7 +173,7 @@ function showResult(startCoordX, startCoordY, endCoordX, endCoordY)
 				newAttribute.value += "border-bottom-style: none; border-top-style: none;";
 			}
 
-			document.getElementById("td" + String(i) + String(startCoordX)).setAttributeNode(newAttribute);
+			document.getElementById("td" + String(i) + "|" + String(startCoordX)).setAttributeNode(newAttribute);
 		}
 	}
 
@@ -172,31 +182,20 @@ function showResult(startCoordX, startCoordY, endCoordX, endCoordY)
 		for (var i = 0; i <= endCoordX - startCoordX; i++)
 		{
 			var newAttribute = document.createAttribute("style");
-			newAttribute.value = "border-style: solid; border-color: red; width: 50px;";
+			newAttribute.value = "border-style: solid; border-color: yellow; background-color: yellow; width: 24px;";
 
-			document.getElementById("td" + String(startCoordY + i) + String(startCoordX + i)).setAttributeNode(newAttribute);
+			document.getElementById("td" + String(startCoordY + i) + "|" + String(startCoordX + i)).setAttributeNode(newAttribute);
 		}
 	}
 
-	else if (startCoordY > endCoordY && startCoordX <= endCoordX)
+	else if (startCoordY <= endCoordY && startCoordX >= endCoordX)
 	{
-		for (var i = startCoordX; i <= endCoordX; i++)
+		for (var i = 0; i <= startCoordX - endCoordX; i++)
 		{
 			var newAttribute = document.createAttribute("style");
-			newAttribute.value = "border-style: solid; border-color: red; width: 50px;";
+			newAttribute.value = "border-style: solid; border-color: lightBlue; background-color: lightBlue; width: 24px;";
 
-			document.getElementById("td" + String(startCoordY - i) + String(startCoordX + i)).setAttributeNode(newAttribute);
-		}
-	}
-
-	else if (startCoordY > endCoordY && startCoordX > endCoordX)
-	{
-		for (var i = startCoordX; i <= endCoordX; i++)
-		{
-			var newAttribute = document.createAttribute("style");
-			newAttribute.value = "border-style: solid; border-color: red; width: 50px;";
-
-			document.getElementById("td" + String(startCoordY - i) + String(startCoordX - i)).setAttributeNode(newAttribute);
+			document.getElementById("td" + String(startCoordY + i) + "|" + String(startCoordX - i)).setAttributeNode(newAttribute);
 		}
 	}
 }
@@ -247,9 +246,10 @@ function main()
 
 			for (var i = 0; i < inputWords.length; i++)
 			{
-				findWord(inputWords[i], "horizontal", inputText.length, inputText[0].length - inputWords[i].length + 1);
-				findWord(inputWords[i], "vertical", inputText.length - inputWords[i].length + 1, inputText[0].length);
-				findWord(inputWords[i], "rightDown", inputText.length - inputWords[i].length + 1, inputText[0].length - inputWords[i].length + 1);
+				findWord(inputWords[i], "horizontal", inputText.length, inputText[0].length - inputWords[i].length + 1, 0);
+				findWord(inputWords[i], "vertical", inputText.length - inputWords[i].length + 1, inputText[0].length, 0);
+				findWord(inputWords[i], "rightDown", inputText.length - inputWords[i].length + 1, inputText[0].length - inputWords[i].length + 1, 0);
+				findWord(inputWords[i], "leftDown", inputText.length - inputWords[i].length + 1, inputText[0].length, inputWords[i].length - 1);
 			}
 		}
 	}
