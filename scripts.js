@@ -16,9 +16,38 @@ function sortCoords(outputWordPlace)
 	outputWordPlace[outputWordPlace.length - 1][3] = temp;
 }
 
+function goBack()
+{
+	document.body.innerHTML = '<div id="main"> <p>Keresendő szavak (vesszővel elválasztva):<br /><input type="text" id="inputWords" size="50" /></p> <p>Táblázat:<br /><textarea id="inputText" rows="10" cols="10"></textarea></p> <p><input type="button" id="submit" value="Keresés!" /></p></div>'
+
+	for (var i = 0; i < inputWords.length; i++)
+	{
+		document.getElementById("inputWords").value += inputWords[i].toLowerCase();
+
+		if (i !== inputWords.length - 1)
+		{
+			document.getElementById("inputWords").value += ", ";
+		}
+	}
+
+	for (var i = 0; i < inputText.length; i++)
+	{
+		document.getElementById("inputText").value += inputText[i].toLowerCase();
+
+		if (i !== inputText.length - 1)
+		{
+			document.getElementById("inputText").value += "\n";
+		}
+	}
+
+	document.getElementById("submit").addEventListener("click", main, false);
+}
+
 function buildTable()
 {
-	document.body.innerHTML = '<div id="main"> Megtalált szavak: <p><table id="outputTable" style="margin:auto; font-size:20px; border-collapse: collapse;"> </table></p> </div>'
+	document.body.innerHTML = '<div id="main"> Megtalált szavak: <p><table id="outputTable" style="margin:auto; font-size:20px; border-collapse: collapse;"></table></p> <p><input type="button" id="back" value = "<- Vissza"></p> </div>'
+
+	document.getElementById("back").addEventListener("click", goBack, false);
 
 	var outputTable = document.getElementById("outputTable");
 
@@ -40,7 +69,6 @@ function findWord(inputWord, direction, bottomBorder, rightBorder, startCoordX)
 {
 	var outputWord = "";
 	var outputWordPlace = [];
-	var foundWords = [];
 
 	for (var i = 0; i < bottomBorder; i++)
 	{
@@ -74,6 +102,13 @@ function findWord(inputWord, direction, bottomBorder, rightBorder, startCoordX)
 					var firstCoord = i + k;
 					var secondCoord = j - k;
 				}
+				
+				/*
+				if (direction === "horizontal")
+				{
+					console.log(firstCoord + ", " + secondCoord);
+				}
+				*/
 
 				outputWord += document.getElementById("td" + String(firstCoord) + "|" + String(secondCoord)).innerHTML;
 
@@ -202,10 +237,12 @@ function showResult(startCoordX, startCoordY, endCoordX, endCoordY)
 
 function main()
 {
-	var inputWords = document.getElementById("inputWords").value.toUpperCase().replace(/ /g, "").split(",");
+	var inputWords = [];
+	inputWords = document.getElementById("inputWords").value.toUpperCase().replace(/ /g, "").split(",");
 	window.inputWords = inputWords;
 
-	var inputText = document.getElementById("inputText").value.replace(/	/g, "").toUpperCase().split("\n");
+	var inputText = [];
+	inputText = document.getElementById("inputText").value.replace(/	/g, "").toUpperCase().split("\n");
 	window.inputText = inputText;
 
 	if (inputText[0] === "" && inputWords[0] === "")
