@@ -136,7 +136,35 @@ function main()
 
 function buildTable()
 {
-	document.body.innerHTML = '<div id="main"><div id="head">A táblázatban megtalált szavak:</div> <p></p><table id="outputTable" style="margin:auto; font-size:20px; border-collapse: collapse;"></table> <br><div id="isNotFound"></div><div id="notFound" style="color: red;"></div> <p><input type="button" id="back" value = "<- Vissza"><input type="button" id="settingsButton" value="Beállítások ↑" /></p><p id="settings" style="display: none;"><input type="checkbox" id="isBackwards" checked="true" /> Keresés visszafelé</p> </div>'
+	document.body.innerHTML = ''
+	+ '<div id="main">'
+	+ '	<div id="head">'
+	+ '		A táblázatban megtalált szavak:'
+	+ '	</div>'
+	+ '	'
+	+ '	<p></p>'
+	+ '	'
+	+ '	<table id="outputTable">'
+	+ '	</table>'
+	+ '	'
+	+ '	<br />'
+	+ '	'
+	+ '	<div id="isNotFound">'
+	+ '	</div>'
+	+ '	'
+	+ '	<div id="notFound">'
+	+ '	</div>'
+	+ '	'
+	+ '	<p>'
+	+ '		<input type="button" id="back" value = "<- Vissza">'
+	+ '		<input type="button" id="settingsButton" value="Beállítások ↑" />'
+	+ '	</p>'
+	+ '	'
+	+ '	<p id="settings">'
+	+ '		<input type="checkbox" id="isBackwards" checked="true" />'
+	+ '		Keresés visszafelé'
+	+ '	</p>'
+	+ '</div>';
 
 	document.getElementById("back").addEventListener("click", goBack, false);
 
@@ -144,15 +172,20 @@ function buildTable()
 
 	for (var i = 0; i < inputText.length; i++)
 	{
-		outputTable.innerHTML += '<tr id="tr"></tr>'
-		document.getElementById("tr").id += i;
-
+		var tr = document.createElement('tr');
+		
 		for (var j = 0; j < inputText[i].length; j++)
 		{
-			document.getElementById("tr" + i).innerHTML += '<td id="td" style="width: 50px;"></td>';
-			document.getElementById("td").innerHTML = inputText[i][j];
-			document.getElementById("td").id += String(i) + "|" + String(j);
+			var td = document.createElement('td');
+			td.classList.add('tableField');
+			td.id = 'td' + i + '|' + j;
+			var text = document.createTextNode(inputText[i][j]);
+			
+			td.appendChild(text);
+			tr.appendChild(td);
 		}
+		
+		outputTable.appendChild(tr);
 	}
 }
 
@@ -400,14 +433,14 @@ function changeSettings(currState)
 {
 	if (document.getElementById("settingsButton").value === "Beállítások ↑" || currState === "close")
 	{
-		document.getElementById("settings").style.cssText = "display: normal;";
+		document.getElementById("settings").style.display = 'block';
 		document.getElementById("settingsButton").value = "Beállítások ↓";
 		isSettingsOpen = true;
 	}
 
 	else if (document.getElementById("settingsButton").value === "Beállítások ↓" || currState === "open")
 	{
-		document.getElementById("settings").style.cssText = "display: none;";
+		document.getElementById("settings").style.display = 'none';
 		document.getElementById("settingsButton").value = "Beállítások ↑";
 		isSettingsOpen = false;
 	}
