@@ -25,19 +25,16 @@ function checkData()
 
 	if (inputText[0] === "" && inputWords[0] === "")
 	{
-		alert("Nincsenek beírva adatok.");
+		alert("Please give me the table and the words to start searching!");
 	}
-
 	else if (inputText[0] === "")
 	{
-		alert("Nincs táblázat, amiben kereshetnék.");
+		alert("Please give me the table to be searched in.");
 	}
-
 	else if (inputWords[0] === "")
 	{
-		alert("Nincsenek keresési kulcsszavak.");
+		alert("Please give me the words to be searched for.");
 	}
-
 	else
 	{
 		var isEqual = true;
@@ -52,9 +49,8 @@ function checkData()
 
 		if (isEqual = false)
 		{
-			alert("A táblázat sorai nem egyenlő hosszúak.");
+			alert("The length of columns are not equal.");
 		}
-
 		else
 		{
 			main();
@@ -87,26 +83,23 @@ function main()
 
 	if (wordsNotFound.length === inputWords.length)
 	{
-		document.getElementById("main").innerHTML = '<p style="color: red;">Egyetlen szó sem volt megtalálható a táblázatban. Ellenőrizd a megadott adatokat és a beállításokat!</p><p><input type="button" id="back" value = "<- Vissza"><input type="button" id="settingsButton" value="Beállítások ↑" /></p><p id="settings" style="display: none;"><input type="checkbox" id="isBackwards" checked="true" /> Keresés visszafelé</p>';
+		document.getElementById("main").innerHTML = '<p style="color: red;">Couldn\'t find any words in the given table. Please check the input table and words!</p><p><input type="button" id="back" value = "<- Back"><input type="button" id="settingsButton" value="Options ↑" /></p><p id="settings" style="display: none;"><input type="checkbox" id="isBackwards" checked="true" /> Search backwards</p>';
 
 		document.getElementById("back").addEventListener("click", goBack, false);
 	}
-
 	else
 	{
 		if (wordsNotFound.length === 0)
 		{
-			document.getElementById("notFound").innerHTML += "Minden megadott szó megtalálható a táblázatban.";
-		}	
-
+			document.getElementById("notFound").innerHTML += "Every word could be found in the given table.";
+		}
 		else if (wordsNotFound.length === 1)
 		{
-			document.getElementById("isNotFound").innerHTML += "A következő szó nem található a táblázatban:";
+			document.getElementById("isNotFound").innerHTML += "This word couldn't be found in the given table:";
 		}
-
 		else
 		{
-			document.getElementById("isNotFound").innerHTML += "A következő szavak nem találhatók a táblázatban:";
+			document.getElementById("isNotFound").innerHTML += "These words couldn't be found in the given table:";
 		}
 
 		for (var i = 0; i < wordsNotFound.length; i++)
@@ -136,35 +129,7 @@ function main()
 
 function buildTable()
 {
-	document.body.innerHTML = ''
-	+ '<div id="main">'
-	+ '	<div id="head">'
-	+ '		A táblázatban megtalált szavak:'
-	+ '	</div>'
-	+ '	'
-	+ '	<p></p>'
-	+ '	'
-	+ '	<table id="outputTable">'
-	+ '	</table>'
-	+ '	'
-	+ '	<br />'
-	+ '	'
-	+ '	<div id="isNotFound">'
-	+ '	</div>'
-	+ '	'
-	+ '	<div id="notFound">'
-	+ '	</div>'
-	+ '	'
-	+ '	<p>'
-	+ '		<input type="button" id="back" value = "<- Vissza">'
-	+ '		<input type="button" id="settingsButton" value="Beállítások ↑" />'
-	+ '	</p>'
-	+ '	'
-	+ '	<p id="settings">'
-	+ '		<input type="checkbox" id="isBackwards" checked="true" />'
-	+ '		Keresés visszafelé'
-	+ '	</p>'
-	+ '</div>';
+	document.body.innerHTML = '' + '<div id="main">' + '	<div id="head">' + '		Words found:' + '	</div>' + '	' + '	<p></p>' + '	' + '	<table id="outputTable">' + '	</table>' + '	' + '	<br />' + '	' + '	<div id="isNotFound">' + '	</div>' + '	' + '	<div id="notFound">' + '	</div>' + '	' + '	<p>' + '		<input type="button" id="back" value = "<- Back">' + '		<input type="button" id="settingsButton" value="Options ↑" />' + '	</p>' + '	' + '	<p id="settings">' + '		<input type="checkbox" id="isBackwards" checked="true" />' + '		Search backwards' + '	</p>' + '</div>';
 
 	document.getElementById("back").addEventListener("click", goBack, false);
 
@@ -173,18 +138,18 @@ function buildTable()
 	for (var i = 0; i < inputText.length; i++)
 	{
 		var tr = document.createElement('tr');
-		
+
 		for (var j = 0; j < inputText[i].length; j++)
 		{
 			var td = document.createElement('td');
 			td.classList.add('tableField');
 			td.id = 'td' + i + '|' + j;
 			var text = document.createTextNode(inputText[i][j]);
-			
+
 			td.appendChild(text);
 			tr.appendChild(td);
 		}
-		
+
 		outputTable.appendChild(tr);
 	}
 }
@@ -208,19 +173,16 @@ function findWord(inputWord, direction, bottomBorder, rightBorder, startCoordX)
 					var firstCoord = i;
 					var secondCoord = j + k;
 				}
-
 				else if (direction === "vertical")
 				{
 					var firstCoord = i + k;
 					var secondCoord = j;
 				}
-
 				else if (direction === "rightDown")
 				{
 					var firstCoord = i + k;
 					var secondCoord = j + k;
 				}
-
 				else if (direction === "leftDown")
 				{
 					var firstCoord = i + k;
@@ -233,7 +195,6 @@ function findWord(inputWord, direction, bottomBorder, rightBorder, startCoordX)
 				{
 					outputWordPlace[outputWordPlace.length] = [j, i];
 				}
-
 				else if (outputWord.length === inputWord.length)
 				{
 					outputWordPlace[outputWordPlace.length - 1][2] = secondCoord;
@@ -249,7 +210,6 @@ function findWord(inputWord, direction, bottomBorder, rightBorder, startCoordX)
 				{
 					outputWordPlace.splice(outputWordPlace.length - 1, 1);
 				}
-
 				else
 				{
 					for (var k = 0; k < wordsNotFound.length; k++)
@@ -261,14 +221,12 @@ function findWord(inputWord, direction, bottomBorder, rightBorder, startCoordX)
 					}
 				}
 			}
-
 			else
 			{
 				if (outputWord !== inputWord)
 				{
 					outputWordPlace.splice(outputWordPlace.length - 1, 1);
 				}
-
 				else
 				{
 					for (var k = 0; k < wordsNotFound.length; k++)
@@ -290,7 +248,6 @@ function findWord(inputWord, direction, bottomBorder, rightBorder, startCoordX)
 						sortCoords();
 					}
 				}
-
 				else
 				{
 					if (outputWordPlace[outputWordPlace.length - 1][0] > outputWordPlace[outputWordPlace.length - 1][2])
@@ -305,7 +262,7 @@ function findWord(inputWord, direction, bottomBorder, rightBorder, startCoordX)
 	for (var i = 0; i < outputWordPlace.length; i++)
 	{
 		showResult(outputWordPlace[i][0], outputWordPlace[i][1], outputWordPlace[i][2], outputWordPlace[i][3]);
-	}	
+	}
 }
 
 function showResult(startCoordX, startCoordY, endCoordX, endCoordY)
@@ -321,12 +278,10 @@ function showResult(startCoordX, startCoordY, endCoordX, endCoordY)
 			{
 				newAttribute.value += "border-right-style: none;";
 			}
-
 			else if (i === endCoordX)
 			{
 				newAttribute.value += "border-left-style: none;";
 			}
-
 			else
 			{
 				newAttribute.value += "border-left-style: none; border-right-style: none;";
@@ -335,7 +290,6 @@ function showResult(startCoordX, startCoordY, endCoordX, endCoordY)
 			document.getElementById("td" + String(startCoordY) + "|" + String(i)).setAttributeNode(newAttribute);
 		}
 	}
-
 	else if (startCoordX === endCoordX && startCoordY <= endCoordY)
 	{
 		for (var i = startCoordY; i <= endCoordY; i++)
@@ -347,12 +301,10 @@ function showResult(startCoordX, startCoordY, endCoordX, endCoordY)
 			{
 				newAttribute.value += "border-bottom-style: none;";
 			}
-
 			else if (i === endCoordY)
 			{
 				newAttribute.value += "border-top-style: none;";
 			}
-
 			else
 			{
 				newAttribute.value += "border-bottom-style: none; border-top-style: none;";
@@ -361,7 +313,6 @@ function showResult(startCoordX, startCoordY, endCoordX, endCoordY)
 			document.getElementById("td" + String(i) + "|" + String(startCoordX)).setAttributeNode(newAttribute);
 		}
 	}
-
 	else if (startCoordY <= endCoordY && startCoordX <= endCoordX)
 	{
 		for (var i = 0; i <= endCoordX - startCoordX; i++)
@@ -372,7 +323,6 @@ function showResult(startCoordX, startCoordY, endCoordX, endCoordY)
 			document.getElementById("td" + String(startCoordY + i) + "|" + String(startCoordX + i)).setAttributeNode(newAttribute);
 		}
 	}
-
 	else if (startCoordY <= endCoordY && startCoordX >= endCoordX)
 	{
 		for (var i = 0; i <= startCoordX - endCoordX; i++)
@@ -422,7 +372,6 @@ function keyPressed(e)
 	{
 		checkData();
 	}
-
 	else if (e.keyCode == 8 && document.getElementById("back") !== null)
 	{
 		goBack();
@@ -437,7 +386,6 @@ function changeSettings(currState)
 		document.getElementById("settingsButton").value = "Beállítások ↓";
 		isSettingsOpen = true;
 	}
-
 	else if (document.getElementById("settingsButton").value === "Beállítások ↓" || currState === "open")
 	{
 		document.getElementById("settings").style.display = 'none';
